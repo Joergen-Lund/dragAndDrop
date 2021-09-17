@@ -1,5 +1,14 @@
 const draggables = document.querySelectorAll('.draggable')
 const containers = document.querySelectorAll('.container')
+const addParagraph = document.getElementById('addP')
+
+addParagraph.addEventListener('click', () => {
+    containers.appendChild
+})
+
+
+
+
 
 draggables.forEach(draggable => {
     draggable.addEventListener('dragstart', () => {
