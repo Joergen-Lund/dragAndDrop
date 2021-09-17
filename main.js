@@ -1,38 +1,49 @@
-const draggables = document.querySelectorAll('.draggable')
-const containers = document.querySelectorAll('.container')
-const addParagraph = document.getElementById('addP')
+const container = document.querySelector('.container')
+const addParagraph = document.getElementById('addParagraph')
 
 addParagraph.addEventListener('click', () => {
-    containers.appendChild
+    console.log('clicked')
+    const p = document.createElement("p")
+    p.classList.add('draggable')
+    p.draggable = "true"
+    p.innerHTML = "test"
+    console.log(p)
+    container.appendChild(p)
+    makeDraggable()
+    
+    reorderElements()
 })
 
 
 
 
+function makeDraggable() {
+    const draggables = document.querySelectorAll('.draggable')
 
-draggables.forEach(draggable => {
-    draggable.addEventListener('dragstart', () => {
-        draggable.classList.add('dragging')
-    })
+    draggables.forEach(draggable => {
+        draggable.addEventListener('dragstart', () => {
+            draggable.classList.add('dragging')
+        })
+    
+        draggable.addEventListener('dragend', () => {
+            draggable.classList.remove('dragging')
+        })
+    });
+}
 
-    draggable.addEventListener('dragend', () => {
-        draggable.classList.remove('dragging')
-    })
-});
 
-containers.forEach(container => {
-    container.addEventListener('dragover', e => {
-        e.preventDefault()
 
-        const afterElement = getDragAfterElement(container, e.clientY)
-        const draggable = document.querySelector('.dragging')
+container.addEventListener('dragover', e => {
+    e.preventDefault()
 
-        if (afterElement == null) {
-            container.appendChild(draggable)
-        } else {
-            container.insertBefore(draggable, afterElement)
-        }
-    })
+    const afterElement = getDragAfterElement(container, e.clientY)
+    const draggable = document.querySelector('.dragging')
+
+    if (afterElement == null) {
+        container.appendChild(draggable)
+    } else {
+        container.insertBefore(draggable, afterElement)
+    }
 })
 
 function getDragAfterElement(container, y) {
@@ -49,3 +60,45 @@ function getDragAfterElement(container, y) {
         }
     }, { offset: Number.NEGATIVE_INFINITY }).element
 }
+
+
+function reorderElements() {
+    const draggables = document.querySelectorAll('.draggable')
+
+    draggables.forEach(draggable => {
+        const reorderEventListener = draggable.addEventListener('dblclick', () => {
+            draggable.style.display = "none"
+            const textarea = document.createElement("textarea")
+            textarea.innerHTML = draggable.innerHTML
+            textarea.classList.add('editing')
+            textarea.rows = "12"
+            container.insertBefore(textarea, draggable)
+            const wrapper = document.querySelector('.wrapper')
+            wrapper.addEventListener('click', a)
+            function a() {
+                console.log(textarea.innerHTML)
+                const editing = document.querySelector('.editing')
+                draggable.innerHTML = editing.innerHTML
+                // textarea.remove()
+                draggable.style.display = "block"
+                wrapper.removeEventListener('click', a)
+            }
+            textarea.addEventListener('click', (e) => {
+                e.stopPropagation()
+            })
+            makeDraggable()
+        })
+    });
+}
+
+function removeReorderEventListener() {
+    const draggables = document.querySelectorAll('.draggable')
+
+    draggables.forEach(draggable => {
+        draggable.removeEventListener('dblclick')
+    });
+}
+
+
+makeDraggable()
+reorderElements()
