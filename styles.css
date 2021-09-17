@@ -1,15 +1,25 @@
 .container {
-    background-color: #111;
+    background-color: rgb(219, 219, 219);
     margin: 1em 0;
     padding: 1em;
 }
 
 .draggable {
-    background: #eee;
+    margin: 1em auto;
+    /* background: #eee; */
     padding: 1em;
     cursor: move;
 }
 
 .draggable.dragging {
     opacity: .5;
+    border: 1px solid #111;
+}
+
+p {
+    max-width: 800px;
+}
+
+img {
+    display: block;
 }
