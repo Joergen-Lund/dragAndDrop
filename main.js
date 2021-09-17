@@ -1,12 +1,14 @@
 const container = document.querySelector('.container')
 const addParagraph = document.getElementById('addParagraph')
+const addImage = document.getElementById('addImage')
 
 addParagraph.addEventListener('click', () => {
     console.log('clicked')
     const p = document.createElement("p")
     p.classList.add('draggable')
+    p.classList.toggle('border')
     p.draggable = "true"
-    p.innerHTML = "test"
+    p.innerHTML = "Double-click to edit text"
     console.log(p)
     container.appendChild(p)
     makeDraggable()
@@ -14,7 +16,33 @@ addParagraph.addEventListener('click', () => {
     reorderElements()
 })
 
+addImage.onchange = () => {
 
+    function logFile (e) {
+        let str = e.target.result
+        let img = document.createElement('img')
+        img.src = str
+        img.classList.add('draggable')
+        img.draggable = "true"
+        container.append(img)
+        console.log(str)
+        
+        makeDraggable()
+    }
+
+    // If there's no file, do nothing
+    if (!addImage.value.length) return
+
+    // Create a new FileReader() object
+    let reader = new FileReader()
+
+    // Setup the callback event to run when the file is read
+    reader.onload = logFile
+
+    // Read the file
+    reader.readAsDataURL(addImage.files[0])
+
+}
 
 
 function makeDraggable() {
@@ -74,21 +102,35 @@ function reorderElements() {
             textarea.rows = "12"
             container.insertBefore(textarea, draggable)
             const wrapper = document.querySelector('.wrapper')
-            wrapper.addEventListener('click', a)
-            function a() {
-                console.log(textarea.innerHTML)
-                const editing = document.querySelector('.editing')
-                draggable.innerHTML = editing.innerHTML
-                // textarea.remove()
-                draggable.style.display = "block"
-                wrapper.removeEventListener('click', a)
-            }
+            wrapper.addEventListener('click', textareaToParagraph)
+            
             textarea.addEventListener('click', (e) => {
                 e.stopPropagation()
             })
             makeDraggable()
         })
     });
+}
+
+function textareaToParagraph() {
+    const draggables = document.querySelectorAll('.draggable')
+    let element = ""
+
+    draggables.forEach(draggable => {
+        if (draggable.style.display == "none") {
+            element = draggable
+            console.log(element)
+        } else {
+            console.log("not found")
+        }
+    });
+
+    const editing = document.querySelector('.editing')
+    element.innerHTML = editing.value
+    editing.remove()
+    element.style.display = "block"
+    const wrapper = document.querySelector('.wrapper')
+    wrapper.removeEventListener('click', textareaToParagraph)
 }
 
 function removeReorderEventListener() {
